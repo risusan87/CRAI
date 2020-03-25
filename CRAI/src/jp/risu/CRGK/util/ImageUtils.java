@@ -14,11 +14,12 @@ import org.opencv.core.Mat;
  * @author Risusan
  */
 public class ImageUtils {
-	public static BufferedImage toBufferedImage(Mat par1mat) {
+	public synchronized static BufferedImage toBufferedImage(Mat par1mat) {
 		if (!par1mat.empty()) {
 	        int type = BufferedImage.TYPE_BYTE_GRAY;
-	        if (par1mat.channels() == 3)
+	        if (par1mat.channels() == 3) {
 	            type = BufferedImage.TYPE_3BYTE_BGR;
+	        }
 	        else if (par1mat.channels() == 4)
 	        	type = BufferedImage.TYPE_4BYTE_ABGR;
 	        
@@ -34,7 +35,8 @@ public class ImageUtils {
 	    return null;
 	}
 	
-	public static BufferedImage resize(BufferedImage img, int newW, int newH) { 
+	@Deprecated
+	public synchronized static BufferedImage resize(BufferedImage img, int newW, int newH) { 
 	    Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
 	    BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
 
@@ -45,15 +47,15 @@ public class ImageUtils {
 	    return dimg;
 	}  
 	
-	public static Mat toMatrix(BufferedImage par1buffimg) {
+	public synchronized static Mat toMatrix(BufferedImage par1buffimg) {
 		par1buffimg = imgConvert(par1buffimg);
-		Mat m = new Mat(par1buffimg.getWidth(), par1buffimg.getHeight(), CvType.CV_8SC3);
+		Mat m = new Mat(par1buffimg.getHeight(), par1buffimg.getWidth(), CvType.CV_8SC3);
 		byte[] data = ((DataBufferByte)par1buffimg.getRaster().getDataBuffer()).getData();
 		m.put(0, 0, data);
 		return m;
 	}
 	
-	private static BufferedImage imgConvert(BufferedImage image) {
+	public synchronized static BufferedImage imgConvert(BufferedImage image) {
         BufferedImage rt = 
         		new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
         rt.getGraphics().drawImage(image, 0, 0, null);

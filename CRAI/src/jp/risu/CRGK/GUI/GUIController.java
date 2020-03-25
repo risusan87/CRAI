@@ -11,7 +11,9 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
+import jp.risu.CRGK.CoreCRGK;
 import jp.risu.CRGK.GUI.scene.Scene;
+import jp.risu.CRGK.GUI.scene.main.MainLabel;
 import jp.risu.CRGK.GUI.scene.main.SceneMain;
 
 /**
@@ -25,13 +27,13 @@ import jp.risu.CRGK.GUI.scene.main.SceneMain;
 @SuppressWarnings("serial")
 public class GUIController extends JFrame {
 	private final List<Scene> Scenes;
-	public static int windowStatement = 0;
+	
 	public GUIController() {
 		this.Scenes = new ArrayList<Scene>();
 		this.setTitle("ÉNÉâÉçÉèÉKÉ`ÇËåN");
 		this.setSize(new Dimension(700, 600));
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setIconImage(new ImageIcon("./resources/img/ic.png").getImage());
+		this.setIconImage(new ImageIcon(CoreCRGK.IMG_PATH_ + "ic.png").getImage());
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);
 		
@@ -59,6 +61,7 @@ public class GUIController extends JFrame {
 	
 	public void setProcessedImage(BufferedImage par1buffimg) {
 		SceneMain s = (SceneMain)this.getScene("SceneMain");
-		s.setImage(par1buffimg);
+		MainLabel ml = (MainLabel)s.main;
+		ml.setImage(par1buffimg);
 	}
 }

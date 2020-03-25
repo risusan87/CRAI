@@ -1,35 +1,53 @@
 package jp.risu.CRGK.ai;
 
+import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
+import javax.imageio.ImageIO;
+
+import org.opencv.core.Mat;
+import org.opencv.core.Point;
+import org.opencv.core.Scalar;
+import org.opencv.imgproc.Imgproc;
+
 import jp.risu.CRGK.CoreCRGK;
+import jp.risu.CRGK.GUI.scene.main.MainLabel;
 import jp.risu.CRGK.GUI.scene.main.SceneMain;
-import jp.risu.CRGK.thread.ThreadProxy;
+import jp.risu.CRGK.util.ImageUtils;
+import jp.risu.CRGK.util.ThreadProxy;
 import net.coobird.thumbnailator.Thumbnails;
 
 /**
  * <p>Date modified: 2020/03/20
- * @author ypmxx
+ * @author Risusan
  *
  */
 public class CentralCommander {
-	private final ScreenCapture capturer;
 	private static final boolean CHECK_ONLINE = true;
 	
 	public CentralCommander() {
-		this.capturer = new ScreenCapture();
 	}
 	
-	private CompletableFuture<BufferedImage> searchGameScreen() {
-		BufferedImage im = this.capturer.captureScreen(new Rectangle(0, 0, CoreCRGK.WIDTH, CoreCRGK.HEIGHT));
-		return null;
+	public Dimension coordGUItoScreen(Dimension par1dimension) {
+		SceneMain sm = (SceneMain)ThreadProxy.GUI.getScene("SceneMain");
+		MainLabel ml = (MainLabel)sm.main;
+		Dimension gui = ml.SIZE;
+		
+		float x_ratio = (float)ThreadProxy.CAP.game_size.width / (float)gui.width;
+		float y_ratio = (float)ThreadProxy.CAP.game_size.height / (float)gui.height;
+
+		int x1 = (int)(par1dimension.width * x_ratio);
+		int y1 = (int)(par1dimension.height * y_ratio);
+		
+		return new Dimension(x1, y1);
 	}
-	
 	
 	/**
 	 * Called once when ai thread is started.
@@ -42,27 +60,28 @@ public class CentralCommander {
 	 * Called for every single loop when ai thread is active.
 	 */
 	public void updateStatus(int par1int) {
-		long rec = System.nanoTime();
-		CompletableFuture<BufferedImage> rawImg = CompletableFuture.supplyAsync(() -> {
-			BufferedImage i = this.capturer.captureScreen(new Rectangle(100, 100, 490, 870));
-			try {
-				return Thumbnails.of(i).forceSize(350, 550).asBufferedImage();
-			} catch (IOException e) {
-				e.printStackTrace();
-				return null;
+		CompletableFuture<Void> pros = CompletableFuture.runAsync(() -> {
+			SceneMain sm = (SceneMain)ThreadProxy.GUI.getScene("SceneMain");
+			MainLabel ml = (MainLabel)sm.main;
+			if (ml.isDragging && ml.start != null && ml.end != null) {
+				//Something to do with coord converting -> gui to screen
+				Point strt = new Point(ml.start.width, ml.start.height);
+				Point dst = new Point(ml.end.width, ml.end.height);
+				
+				Mat m = ImageUtils.toMatrix(ThreadProxy.CAP.shrinkedImage);
+				Imgproc.rectangle(m, strt, dst, new Scalar(0, 0, 0, 255), 1);
+				ThreadProxy.CAP.processedImage = ImageUtils.toBufferedImage(m);
 			}
 		}, ThreadProxy.poolAI());
+		
 		try {
-			CoreCRGK.gui.setProcessedImage(rawImg.get());
+			pros.get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
 		}
-		if (ThreadProxy.currentPPS != -1) {
-			SceneMain m = (SceneMain)CoreCRGK.gui.getScene("SceneMain");
-			m.setFPS(ThreadProxy.currentPPS);
-		}
-		SceneMain sm = (SceneMain)CoreCRGK.gui.getScene("SceneMain");
-		sm.setPPS(new Float(TimeUnit.MILLISECONDS.convert(System.nanoTime() - rec, TimeUnit.NANOSECONDS)));
+		SceneMain sm = (SceneMain)ThreadProxy.GUI.getScene("SceneMain");
+		sm.setPPS(ThreadProxy.currentPPS);
+		sm.setFPS(ThreadProxy.currentFPS);
 	}
 	
 	/**
