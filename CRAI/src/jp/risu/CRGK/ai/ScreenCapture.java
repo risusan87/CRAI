@@ -18,6 +18,7 @@ import javafx.scene.control.Slider;
 import jp.risu.CRGK.CoreCRGK;
 import jp.risu.CRGK.GUI.scene.main.MainLabel;
 import jp.risu.CRGK.GUI.scene.main.SceneMain;
+import jp.risu.CRGK.util.FileIOUtils;
 import jp.risu.CRGK.util.ThreadProxy;
 import net.coobird.thumbnailator.Thumbnails;
 
@@ -32,7 +33,7 @@ public class ScreenCapture {
 	public ScreenCapture() {
 		try {
 			this.capture = new Robot();
-			this.capturedImage = ImageIO.read(new File(CoreCRGK.IMG_PATH_ + "Back.png"));
+			this.capturedImage = ImageIO.read(FileIOUtils.getResource("resources/img/Back.png"));
 		} catch (AWTException e) {
 			e.printStackTrace();
 			this.capture = null;

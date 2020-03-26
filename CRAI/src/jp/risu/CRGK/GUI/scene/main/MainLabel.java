@@ -15,6 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.border.LineBorder;
 
 import jp.risu.CRGK.CoreCRGK;
+import jp.risu.CRGK.util.FileIOUtils;
 import jp.risu.CRGK.util.ThreadProxy;
 
 /**
@@ -33,7 +34,7 @@ public class MainLabel extends JLabel implements MouseListener, MouseMotionListe
 	public MainLabel() {
 		super();
 		try {
-			this.setIcon(new ImageIcon(ImageIO.read(new File(CoreCRGK.IMG_PATH_ + "back.png"))));
+			this.setIcon(new ImageIcon(ImageIO.read(FileIOUtils.getResource("resources/img/Back.png"))));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

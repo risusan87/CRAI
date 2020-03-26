@@ -3,9 +3,7 @@ package jp.risu.CRGK;
 import java.awt.AWTException;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-
-import org.opencv.core.Core;
-
+import jp.risu.CRGK.util.FileIOUtils;
 import jp.risu.CRGK.util.ThreadProxy;
 
 /**
@@ -14,12 +12,12 @@ import jp.risu.CRGK.util.ThreadProxy;
  * @author Risusan
  */
 public class CoreCRGK {
+	static { FileIOUtils.initIO(); };
+	
 	public static final int WIDTH = Toolkit.getDefaultToolkit().getScreenSize().width;
 	public static final int HEIGHT = Toolkit.getDefaultToolkit().getScreenSize().height;
 	public static final int R_WIDTH = getRatio().width;
 	public static final int R_HEIGHT = getRatio().height;
-	
-	public static final String IMG_PATH_ = "./resources/img/";
 	
 	private static Dimension getRatio() {
 		int h = HEIGHT, w = WIDTH;
@@ -33,7 +31,8 @@ public class CoreCRGK {
 	}
 	
 	public static void main(String main[]) throws AWTException {
-		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+		System.setProperty("java.library.path", "C:/Users/ypmxx/OneDrive/デスクトップ/クラロワガチり君");
+		System.load(System.getProperty("java.library.path") + "/opencvlib.dll");
 		System.out.println("Starting CRGK(クラロワガチり君)_Ver.dev1.0");
 		ThreadProxy.activateAI();
 	}

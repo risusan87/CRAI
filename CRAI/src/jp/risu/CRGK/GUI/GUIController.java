@@ -15,6 +15,7 @@ import jp.risu.CRGK.CoreCRGK;
 import jp.risu.CRGK.GUI.scene.Scene;
 import jp.risu.CRGK.GUI.scene.main.MainLabel;
 import jp.risu.CRGK.GUI.scene.main.SceneMain;
+import jp.risu.CRGK.util.FileIOUtils;
 
 /**
  * Class {@code GUIController} is the main GUI of the program.
@@ -33,7 +34,11 @@ public class GUIController extends JFrame {
 		this.setTitle("ÉNÉâÉçÉèÉKÉ`ÇËåN");
 		this.setSize(new Dimension(700, 600));
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setIconImage(new ImageIcon(CoreCRGK.IMG_PATH_ + "ic.png").getImage());
+		try {
+			this.setIconImage(new ImageIcon(ImageIO.read(FileIOUtils.getResource("resources/img/ic.png"))).getImage());
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);
 		
@@ -43,7 +48,7 @@ public class GUIController extends JFrame {
 		this.getContentPane().add(s);
 		
 		try {
-			this.setProcessedImage(ImageIO.read(new File("./resources/img/Back.png")));
+			this.setProcessedImage(ImageIO.read(FileIOUtils.getResource("resources/img/ic.png")));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

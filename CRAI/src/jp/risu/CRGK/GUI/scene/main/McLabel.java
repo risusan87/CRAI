@@ -9,7 +9,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.border.LineBorder;
 
+import jp.risu.CRGK.CoreCRGK;
 import jp.risu.CRGK.util.Colour;
+import jp.risu.CRGK.util.FileIOUtils;
 
 /**
  * 
@@ -22,7 +24,7 @@ public class McLabel extends JLabel {
 	public McLabel() {
 		super();
 		try {
-			this.back = ImageIO.read(new File("./resources/img/mcl_back.png"));
+			this.back = ImageIO.read(FileIOUtils.getResource("resources/img/mcl_back.png"));
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
