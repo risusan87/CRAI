@@ -59,7 +59,7 @@ public class GUIController extends JFrame {
 		return null;
 	}
 	
-	public void setProcessedImage(BufferedImage par1buffimg) {
+	public synchronized void setProcessedImage(BufferedImage par1buffimg) {
 		SceneMain s = (SceneMain)this.getScene("SceneMain");
 		MainLabel ml = (MainLabel)s.main;
 		ml.setImage(par1buffimg);

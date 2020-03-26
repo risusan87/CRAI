@@ -26,8 +26,7 @@ import jp.risu.CRGK.util.ThreadProxy;
 public class SceneMain extends Scene {
 	public  final JLabel main;
 	public final McLabel mcl;
-	private final JLabel fps;
-	private final JLabel pps;
+	public FPPSSetter fpps;
 	
 	public SceneMain() {
 		super("SceneMain");
@@ -35,11 +34,6 @@ public class SceneMain extends Scene {
 		
 		JPanel leftP = new JPanel(new FlowLayout());
 		JPanel rightP = new JPanel();
-		JPanel fpsSetterP = new JPanel();
-		
-		fpsSetterP.setLayout(null);
-		fpsSetterP.setBorder(BorderFactory.createTitledBorder("FPS & PPS setting"));
-		fpsSetterP.setBounds(35, 5, 220, 80);
 		
 		rightP.setLayout(null);
 		rightP.setPreferredSize(new Dimension(320, -1));
@@ -49,21 +43,12 @@ public class SceneMain extends Scene {
 		
 		this.main = new MainLabel();
 		this.mcl = new McLabel();
-		this.fps = new JLabel();
-		this.pps = new JLabel();
-		
-		this.fps.setBounds(30, 13, 80, 30);
-		this.pps.setBounds(30, 45, 80, 30);
+		this.fpps = new FPPSSetter();
 		
 		leftP.add(this.main);
 		
-		fpsSetterP.add(new FpsSetter());
-		fpsSetterP.add(new PpsSetter());
-		fpsSetterP.add(this.pps);
-		fpsSetterP.add(this.fps);
-		
 		rightP.add(this.mcl);
-		rightP.add(fpsSetterP);
+		rightP.add(this.fpps);
 		
 		this.add(leftP, BorderLayout.WEST);
 		this.add(rightP, BorderLayout.EAST);
@@ -72,10 +57,10 @@ public class SceneMain extends Scene {
 	}
 	
 	public synchronized void setFPS(int par1float) {
-		this.fps.setText("FPS: " + Float.toString(par1float));
+		this.fpps.fps.setText("FPS: " + Float.toString(par1float));
 	}
 	
 	public synchronized void setPPS(int par1float) {
-		this.pps.setText("PPS: " + Float.toString(par1float));
+		this.fpps.pps.setText("PPS: " + Float.toString(par1float));
 	}
 }

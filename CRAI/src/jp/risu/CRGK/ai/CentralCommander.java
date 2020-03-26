@@ -54,6 +54,7 @@ public class CentralCommander {
 	 */
 	public void onThreadStart() {
 		//file input onto stream
+		ThreadProxy.activateCP();
 	}
 	
 	/**
@@ -61,17 +62,24 @@ public class CentralCommander {
 	 */
 	public void updateStatus(int par1int) {
 		CompletableFuture<Void> pros = CompletableFuture.runAsync(() -> {
+			if (!ImageProcessor.isJobClear())
+				ImageProcessor.clearJobs();
 			SceneMain sm = (SceneMain)ThreadProxy.GUI.getScene("SceneMain");
 			MainLabel ml = (MainLabel)sm.main;
 			if (ml.isDragging && ml.start != null && ml.end != null) {
-				//Something to do with coord converting -> gui to screen
-				Point strt = new Point(ml.start.width, ml.start.height);
-				Point dst = new Point(ml.end.width, ml.end.height);
-				
-				Mat m = ImageUtils.toMatrix(ThreadProxy.CAP.shrinkedImage);
-				Imgproc.rectangle(m, strt, dst, new Scalar(0, 0, 0, 255), 1);
-				ThreadProxy.CAP.processedImage = ImageUtils.toBufferedImage(m);
+				ImageProcessor.addProcess(img -> {
+					//Something to do with coord converting -> gui to screen
+					Point strt = new Point(ml.start.width, ml.start.height);
+					Point dst = new Point(ml.end.width, ml.end.height);
+					Mat m = ImageUtils.toMatrix(img);
+					Imgproc.rectangle(m, strt, dst, new Scalar(0, 0, 255, 0), 2);
+					return ImageUtils.toBufferedImage(m);
+				});
 			}
+			if (!ImageProcessor.isJobClear())
+				ThreadProxy.GUI.setProcessedImage(ImageProcessor.executeProcesses(ThreadProxy.CAP.shrinkedImage));
+			else if (ThreadProxy.CAP.shrinkedImage != null)
+				ThreadProxy.GUI.setProcessedImage(ThreadProxy.CAP.shrinkedImage);
 		}, ThreadProxy.poolAI());
 		
 		try {
@@ -88,6 +96,6 @@ public class CentralCommander {
 	 * Called once when ai thread is tarminated.
 	 */
 	public void onThreadClose() {
-		System.out.println("Closing");
+		ThreadProxy.tarminateCP();
 	}
 }

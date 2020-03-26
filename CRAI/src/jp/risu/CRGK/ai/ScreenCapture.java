@@ -7,8 +7,12 @@ import java.awt.Robot;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import javax.imageio.ImageIO;
+
+import org.opencv.core.Point;
 
 import javafx.scene.control.Slider;
 import jp.risu.CRGK.CoreCRGK;
@@ -74,11 +78,18 @@ public class ScreenCapture {
 		this.capturedImage = this.captureScreen(new Rectangle(origin.width, origin.height, game_size.width, game_size.height));
 		try {
 			this.shrinkedImage = Thumbnails.of(this.capturedImage).forceSize(320, 550).asBufferedImage();
-			if (processedImage != null) {
-				ThreadProxy.GUI.setProcessedImage(processedImage);
-				processedImage = null;
+			if (!ImageProcessor.isJobClear()) {
+				CompletableFuture<BufferedImage> cf = CompletableFuture.supplyAsync(() -> {
+					return ImageProcessor.executeProcesses(this.shrinkedImage);
+				}, ThreadProxy.poolAI());
+				try {
+					this.processedImage = cf.get();
+				} catch (InterruptedException | ExecutionException e) {
+					e.printStackTrace();
+				}
 			} else
-				ThreadProxy.GUI.setProcessedImage(this.shrinkedImage);
+				this.processedImage = this.shrinkedImage;
+			ThreadProxy.GUI.setProcessedImage(this.processedImage);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

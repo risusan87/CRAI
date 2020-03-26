@@ -35,7 +35,6 @@ public class CoreCRGK {
 	public static void main(String main[]) throws AWTException {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 		System.out.println("Starting CRGK(ƒNƒ‰ƒƒƒKƒ`‚èŒN)_Ver.dev1.0");
-		ThreadProxy.activateCP();
 		ThreadProxy.activateAI();
 	}
 }
