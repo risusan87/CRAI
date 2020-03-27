@@ -3,6 +3,9 @@ package jp.risu.CRGK;
 import java.awt.AWTException;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+
+import org.opencv.core.Core;
+
 import jp.risu.CRGK.util.FileIOUtils;
 import jp.risu.CRGK.util.ThreadProxy;
 
@@ -31,8 +34,12 @@ public class CoreCRGK {
 	}
 	
 	public static void main(String main[]) throws AWTException {
-		System.setProperty("java.library.path", "C:/Users/ypmxx/OneDrive/デスクトップ/クラロワガチり君");
-		System.load(System.getProperty("java.library.path") + "/opencvlib.dll");
+		if (!FileIOUtils.prefferedLib.equals("")) {
+			System.setProperty("java.library.path", FileIOUtils.prefferedLib);
+		} else {
+			System.setProperty("java.library.path", FileIOUtils.nativeLib);
+		}
+		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 		System.out.println("Starting CRGK(クラロワガチり君)_Ver.dev1.0");
 		ThreadProxy.activateAI();
 	}
