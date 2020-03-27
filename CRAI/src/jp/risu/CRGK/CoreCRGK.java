@@ -3,6 +3,10 @@ package jp.risu.CRGK;
 import java.awt.AWTException;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.WindowEvent;
+import java.io.File;
+
+import javax.swing.JOptionPane;
 
 import org.opencv.core.Core;
 
@@ -34,13 +38,8 @@ public class CoreCRGK {
 	}
 	
 	public static void main(String main[]) throws AWTException {
-		if (!FileIOUtils.prefferedLib.equals("")) {
-			System.setProperty("java.library.path", FileIOUtils.prefferedLib);
-		} else {
-			System.setProperty("java.library.path", FileIOUtils.nativeLib);
-		}
-		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-		System.out.println("Starting CRGK(ÉNÉâÉçÉèÉKÉ`ÇËåN)_Ver.dev1.0");
+		System.out.println("succ");
+		ThreadProxy.init();
 		ThreadProxy.activateAI();
 	}
 }

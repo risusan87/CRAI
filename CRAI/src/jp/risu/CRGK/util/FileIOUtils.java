@@ -17,9 +17,15 @@ import java.net.URLDecoder;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.Enumeration;
+import java.util.Properties;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
+
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
+import org.opencv.core.Core;
 
 import jp.risu.CRGK.CoreCRGK;
 
@@ -29,16 +35,20 @@ import jp.risu.CRGK.CoreCRGK;
  */
 public class FileIOUtils { 
 	private static boolean isJar;
-	public static String nativeLib = "D:/Program Files(x86)/java library/opencv/build/java/x64";
-	public static String prefferedLib = "";
+	private static String defaultLib = "D:/Program Files(x86)/java library/opencv/build/java/x64";
+	private static String prefferedLib = "";
 	private static JarFile Jar = null;
+	private static String libName;
 	
 	/**
-	 * NOTE:!!THIS MUST BE CALLED AS SOON AS MAIN CLASS IS LOADED!!
+	 * NOTE:!!THIS MUST BE CALLED AS SOON AS MAIN CLASS IS LOADED !! Do NOT call anywhere else !!
+	 * <p>Checks if the program is running from the jar file, and establishes resource and native library paths.
 	 */
 	public static void initIO() {
 		URL url = CoreCRGK.class.getResource("");
 		isJar = url.getProtocol().equals("jar");
+		Properties prop = System.getProperties();
+		
 		if (isJar) {
 			String[] str;
 			try {
@@ -48,10 +58,10 @@ public class FileIOUtils {
 				str = path.split(":");
 				path = str[str.length - 1].split("!")[0];
 				
-				nativeLib = path.replace("クラロワガチり君.jar", "");
+				defaultLib = path.replace("クラロワガチり君.jar", "");
 				Jar = new JarFile(new File(path));
 				
-				File f = new File(nativeLib + "LIB_PATH_.config");
+				File f = new File(defaultLib + "LIB_PATH_.config");
 				if (f.exists()) {
 					BufferedReader br = new BufferedReader(new FileReader(f));
 					String lib = br.readLine(); br.close();
@@ -66,7 +76,7 @@ public class FileIOUtils {
 						if (lib.startsWith("\"") && lib.endsWith("\"")) {
 							lib = lib.substring(1); lib = lib.substring(0, lib.length() - 1);
 							System.out.println(lib);
-							nativeLib = lib;
+							prefferedLib = lib;
 						} else {
 							System.out.println("Native path not set right: \'\"\' not found");
 						}
@@ -80,12 +90,36 @@ public class FileIOUtils {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			
+			libName = "opencvlib";
+			prop.setProperty("java.library.path", prefferedLib.equals("") ? defaultLib : prefferedLib);
+		} else {
+			libName = Core.NATIVE_LIBRARY_NAME;
+			prop.setProperty("java.library.path", defaultLib);
+		}
+		System.out.println("Loading lib from path:" + prop.getProperty("java.library.path"));
+		System.out.println("named:" + libName);
+		try {
+			System.load(prop.getProperty("java.library.path") + "/" + libName + ".dll");
+		} catch (UnsatisfiedLinkError e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(new JFrame(), e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 	
+	public static boolean isRunningFromJarFile() {
+		return isJar;
+	}
 	
+	/**
+	 * Returns any outcoming file in resources folder as a {@code InputStream} object. Paths are
+	 * specified having the origin as the root of the jar file:
+	 * <p>.jar/{@code resources/path/to/some/files/SomeFile.file}
+	 * @param par1str - Path to the destination
+	 * @return file in as {@code InputStream}, or {@code null} if file not found.
+	 */
 	public static InputStream getResource(String par1str) {
-		if (isJar) {
+		if (isRunningFromJarFile()) {
 			ZipEntry z = Jar.getEntry(par1str);
 			try {
 				return Jar.getInputStream(z);
@@ -96,9 +130,5 @@ public class FileIOUtils {
 		} else {
 			return CoreCRGK.class.getResourceAsStream("/" + par1str);
 		}
-	}
-	
-	public static boolean isPathExist(String par1str) {
-		return false;
 	}
 }

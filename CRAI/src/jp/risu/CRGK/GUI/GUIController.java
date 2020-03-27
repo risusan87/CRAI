@@ -31,7 +31,7 @@ public class GUIController extends JFrame {
 	
 	public GUIController() {
 		this.Scenes = new ArrayList<Scene>();
-		this.setTitle("クラロワガチり君");
+		this.setTitle("クラロワガチり君 dev0.7.6");
 		this.setSize(new Dimension(700, 600));
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		try {
@@ -48,7 +48,7 @@ public class GUIController extends JFrame {
 		this.getContentPane().add(s);
 		
 		try {
-			this.setProcessedImage(ImageIO.read(FileIOUtils.getResource("resources/img/ic.png")));
+			this.setProcessedImage(ImageIO.read(FileIOUtils.getResource("resources/img/Back.png")));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

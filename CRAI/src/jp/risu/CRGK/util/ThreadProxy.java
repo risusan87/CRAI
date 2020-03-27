@@ -26,10 +26,16 @@ public class ThreadProxy {
 	private static Thread AI_Loop;
 	private static Thread CT_Loop;
 	private static Thread CP_Loop;
-	public static final CentralCommander AI = new CentralCommander();
-	public static final GUIController GUI = new GUIController();
-	public static final ScreenCapture CAP = new ScreenCapture();
 	
+	public static CentralCommander AI;
+	public static GUIController GUI;
+	public static ScreenCapture CAP;
+	
+	public static void init() {
+		AI = new CentralCommander();
+		GUI = new GUIController();
+		CAP = new ScreenCapture();
+	}
 	public static ExecutorService poolAI() {
 		return AI_ThreadPool;
 	}
