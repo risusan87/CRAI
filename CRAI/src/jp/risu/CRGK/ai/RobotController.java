@@ -5,17 +5,20 @@ import java.awt.Dimension;
 import java.awt.Robot;
 
 /**
- * 
  * <p>Date modified: 2020/03/24
  * @author Risusan
  */
+
 /*
  * tile: 32x18
  */
-public class OutputManager {
+public class RobotController {
+	@SuppressWarnings("unused")
 	private final Robot hand;
+	@SuppressWarnings("unused")
 	private static volatile Dimension origin = new Dimension(0, 0);
-	public OutputManager() throws AWTException {
+	
+	public RobotController() throws AWTException {
 		this.hand = new Robot();
 	}
 	
@@ -23,9 +26,6 @@ public class OutputManager {
 		origin = new Dimension(par1int, par2int);
 	}
 	
-	/**
-	 * 
-	 */
 	public void setButton() {
 		
 	}

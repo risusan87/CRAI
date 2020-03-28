@@ -1,21 +1,11 @@
 package jp.risu.CRGK.GUI.scene.main;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.image.BufferedImage;
-
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.border.LineBorder;
-
 import jp.risu.CRGK.GUI.scene.Scene;
-import jp.risu.CRGK.util.Colour;
-import jp.risu.CRGK.util.ThreadProxy;
 
 /**
  * Set up all conponent when initialized.
@@ -25,8 +15,11 @@ import jp.risu.CRGK.util.ThreadProxy;
 @SuppressWarnings("serial")
 public class SceneMain extends Scene {
 	public  final JLabel main;
-	public final McLabel mcl;
+	
+	//STEP1: Declaring components
+	public final McPanel mcl;
 	public FPPSSetter fpps;
+	public final AIModeSetter aimode;
 	
 	public SceneMain() {
 		super("SceneMain");
@@ -37,19 +30,26 @@ public class SceneMain extends Scene {
 		
 		rightP.setLayout(null);
 		rightP.setPreferredSize(new Dimension(320, -1));
+		//remove thisÅ´ from commenting if needed as debugging for right side of the window.
 		//rightP.setBorder(new LineBorder(Colour.getColorFromDegrees(180), 2, true));
 		
 		leftP.setPreferredSize(new Dimension(370, -1));
 		
 		this.main = new MainLabel();
-		this.mcl = new McLabel();
+		
+		//STEP2: Initiating components on the right side.
+		this.mcl = new McPanel();
 		this.fpps = new FPPSSetter();
+		this.aimode = new AIModeSetter();
 		
 		leftP.add(this.main);
 		
+		//STEP3: Setting up components and they are ready to go.
 		rightP.add(this.mcl);
 		rightP.add(this.fpps);
+		rightP.add(this.aimode);
 		
+		//Final setup
 		this.add(leftP, BorderLayout.WEST);
 		this.add(rightP, BorderLayout.EAST);
 		this.addComponent(leftP, "leftP");

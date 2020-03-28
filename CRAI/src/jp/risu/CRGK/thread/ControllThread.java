@@ -11,6 +11,7 @@ import java.awt.Robot;
 @Deprecated
 public class ControllThread implements Runnable {
 	private final Thread main;
+	@SuppressWarnings("unused")
 	private final Robot robot;
 	private boolean cond;
 	

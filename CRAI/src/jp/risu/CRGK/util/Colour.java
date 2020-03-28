@@ -1,7 +1,6 @@
 package jp.risu.CRGK.util;
 
 import java.awt.Color;
-import java.awt.Image;
 
 /**
  * Class {@code Colour} supports further flexible functions for image processing.

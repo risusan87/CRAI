@@ -1,24 +1,14 @@
 package jp.risu.CRGK.util;
 
-import java.awt.image.BufferedImage;
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
-import java.util.Enumeration;
 import java.util.Properties;
-import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
@@ -41,10 +31,10 @@ public class FileIOUtils {
 	private static String libName;
 	
 	/**
-	 * NOTE:!!THIS MUST BE CALLED AS SOON AS MAIN CLASS IS LOADED !! Do NOT call anywhere else !!
+	 * NOTE:This method shouldn't be called from nowhere else than {@code CoreCRGK}.
 	 * <p>Checks if the program is running from the jar file, and establishes resource and native library paths.
 	 */
-	public static void initIO() {
+	public static final void initIO() {
 		URL url = CoreCRGK.class.getResource("");
 		isJar = url.getProtocol().equals("jar");
 		Properties prop = System.getProperties();

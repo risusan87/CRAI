@@ -1,28 +1,17 @@
 package jp.risu.CRGK.ai;
 
 import java.awt.Dimension;
-import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-
-import javax.imageio.ImageIO;
-
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
-import jp.risu.CRGK.CoreCRGK;
 import jp.risu.CRGK.GUI.scene.main.MainLabel;
 import jp.risu.CRGK.GUI.scene.main.SceneMain;
 import jp.risu.CRGK.util.ImageUtils;
 import jp.risu.CRGK.util.ThreadProxy;
-import net.coobird.thumbnailator.Thumbnails;
 
 /**
  * <p>Date modified: 2020/03/20
@@ -30,6 +19,7 @@ import net.coobird.thumbnailator.Thumbnails;
  *
  */
 public class CentralCommander {
+	@SuppressWarnings("unused")
 	private static final boolean CHECK_ONLINE = true;
 	
 	public CentralCommander() {
@@ -62,12 +52,12 @@ public class CentralCommander {
 	 */
 	public void updateStatus(int par1int) {
 		CompletableFuture<Void> pros = CompletableFuture.runAsync(() -> {
-			if (!ImageProcessor.isJobClear())
-				ImageProcessor.clearJobs();
+			if (!ProcessPromiser.isJobClear())
+				ProcessPromiser.clearJobs();
 			SceneMain sm = (SceneMain)ThreadProxy.GUI.getScene("SceneMain");
 			MainLabel ml = (MainLabel)sm.main;
 			if (ml.isDragging && ml.start != null && ml.end != null) {
-				ImageProcessor.addProcess(img -> {
+				ProcessPromiser.addProcess(img -> {
 					//Something to do with coord converting -> gui to screen
 					Point strt = new Point(ml.start.width, ml.start.height);
 					Point dst = new Point(ml.end.width, ml.end.height);
@@ -76,8 +66,8 @@ public class CentralCommander {
 					return ImageUtils.toBufferedImage(m);
 				});
 			}
-			if (!ImageProcessor.isJobClear())
-				ThreadProxy.GUI.setProcessedImage(ImageProcessor.executeProcesses(ThreadProxy.CAP.shrinkedImage));
+			if (!ProcessPromiser.isJobClear())
+				ThreadProxy.GUI.setProcessedImage(ProcessPromiser.executeProcesses(ThreadProxy.CAP.shrinkedImage));
 			else if (ThreadProxy.CAP.shrinkedImage != null)
 				ThreadProxy.GUI.setProcessedImage(ThreadProxy.CAP.shrinkedImage);
 		}, ThreadProxy.poolAI());

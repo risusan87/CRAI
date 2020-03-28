@@ -1,10 +1,7 @@
 package jp.risu.CRGK.util;
 
-import java.awt.AWTException;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import jp.risu.CRGK.GUI.GUIController;
@@ -20,10 +17,12 @@ public class ThreadProxy {
 	private static final ExecutorService CT_ThreadPool = Executors.newWorkStealingPool();
 	public static volatile float FPS = 30.f;
 	public static volatile float PPS = 60.f;
+	@SuppressWarnings("unused")
 	private static volatile boolean exit01, exit02, exit03;
 	public static int currentPPS = -1;
 	public static int currentFPS = -1;
 	private static Thread AI_Loop;
+	@SuppressWarnings("unused")
 	private static Thread CT_Loop;
 	private static Thread CP_Loop;
 	

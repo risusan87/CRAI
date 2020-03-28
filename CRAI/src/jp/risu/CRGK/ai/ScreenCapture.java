@@ -5,19 +5,12 @@ import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import javax.imageio.ImageIO;
 
-import org.opencv.core.Point;
-
-import javafx.scene.control.Slider;
-import jp.risu.CRGK.CoreCRGK;
-import jp.risu.CRGK.GUI.scene.main.MainLabel;
-import jp.risu.CRGK.GUI.scene.main.SceneMain;
 import jp.risu.CRGK.util.FileIOUtils;
 import jp.risu.CRGK.util.ThreadProxy;
 import net.coobird.thumbnailator.Thumbnails;
@@ -79,9 +72,13 @@ public class ScreenCapture {
 		this.capturedImage = this.captureScreen(new Rectangle(origin.width, origin.height, game_size.width, game_size.height));
 		try {
 			this.shrinkedImage = Thumbnails.of(this.capturedImage).forceSize(320, 550).asBufferedImage();
-			if (!ImageProcessor.isJobClear()) {
+			if (!ProcessPromiser.isJobClear() && this.shrinkedImage != null) {
 				CompletableFuture<BufferedImage> cf = CompletableFuture.supplyAsync(() -> {
-					return ImageProcessor.executeProcesses(this.shrinkedImage);
+					try {
+						return ProcessPromiser.executeProcesses(this.shrinkedImage);
+					} catch (NullPointerException e) {
+						return this.shrinkedImage;
+					}
 				}, ThreadProxy.poolAI());
 				try {
 					this.processedImage = cf.get();

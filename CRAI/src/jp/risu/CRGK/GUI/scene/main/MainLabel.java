@@ -6,7 +6,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -14,7 +13,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.border.LineBorder;
 
-import jp.risu.CRGK.CoreCRGK;
 import jp.risu.CRGK.util.FileIOUtils;
 import jp.risu.CRGK.util.ThreadProxy;
 
@@ -71,7 +69,7 @@ public class MainLabel extends JLabel implements MouseListener, MouseMotionListe
 		if (this.isInLabel && start != null && end != null) {
 			end = new Dimension(e.getX(), e.getY());
 			SceneMain sm = (SceneMain)ThreadProxy.GUI.getScene("SceneMain");
-			McLabel mcl = (McLabel)sm.mcl;
+			McPanel mcl = (McPanel)sm.mcl;
 			mcl.setImage(ThreadProxy.CAP.captureSelectedScreen(start, end));
 			isDragging = false;
 			start = null;

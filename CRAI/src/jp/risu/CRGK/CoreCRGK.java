@@ -3,13 +3,6 @@ package jp.risu.CRGK;
 import java.awt.AWTException;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.awt.event.WindowEvent;
-import java.io.File;
-
-import javax.swing.JOptionPane;
-
-import org.opencv.core.Core;
-
 import jp.risu.CRGK.util.FileIOUtils;
 import jp.risu.CRGK.util.ThreadProxy;
 
@@ -38,7 +31,7 @@ public class CoreCRGK {
 	}
 	
 	public static void main(String main[]) throws AWTException {
-		System.out.println("succ");
+		System.out.println("System library successfully loaded.");
 		ThreadProxy.init();
 		ThreadProxy.activateAI();
 	}
