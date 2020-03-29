@@ -90,10 +90,12 @@ public class FileIOUtils {
 		System.out.println("Loading lib from path:" + prop.getProperty("java.library.path"));
 		System.out.println("named:" + libName);
 		try {
+			System.out.println(prop.getProperty("java.library.path") + "/" + libName + ".dll");
 			System.load(prop.getProperty("java.library.path") + "/" + libName + ".dll");
 		} catch (UnsatisfiedLinkError e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(new JFrame(), e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
+			System.exit(0);
 		}
 	}
 	
@@ -104,7 +106,7 @@ public class FileIOUtils {
 	/**
 	 * Returns any outcoming file in resources folder as a {@code InputStream} object. Paths are
 	 * specified having the origin as the root of the jar file:
-	 * <p>.jar/{@code resources/path/to/some/files/SomeFile.file}
+	 * <p>ex: {@code resources/path/to/some/files/SomeFile.file}
 	 * @param par1str - Path to the destination
 	 * @return file in as {@code InputStream}, or {@code null} if file not found.
 	 */
@@ -120,5 +122,17 @@ public class FileIOUtils {
 		} else {
 			return CoreCRGK.class.getResourceAsStream("/" + par1str);
 		}
+	}
+	
+	/**
+	 * Returns file as {@code InputStream} object.
+	 * It searches path given in the same folder where the jar belongs, if running from jar file.
+	 * @return
+	 */
+	public static boolean getResourceFromHomeFolder(String par1str) {
+		if (isRunningFromJarFile())
+			return new File(defaultLib + "/saves/" + par1str).exists();
+		else
+			return new File("./src/resources/saves/" + par1str).exists();
 	}
 }
