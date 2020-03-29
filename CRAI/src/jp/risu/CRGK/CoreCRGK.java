@@ -31,7 +31,6 @@ public class CoreCRGK {
 	}
 	
 	public static void main(String main[]) throws AWTException {
-		System.out.println("System library successfully loaded.");
 		ThreadProxy.init();
 		System.out.println(FileIOUtils.getResourceFromHomeFolder("test.test"));
 		ThreadProxy.activateAI();

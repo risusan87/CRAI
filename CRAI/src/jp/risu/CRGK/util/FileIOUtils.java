@@ -15,8 +15,6 @@ import java.util.zip.ZipEntry;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import org.opencv.core.Core;
-
 import jp.risu.CRGK.CoreCRGK;
 
 /**
@@ -32,12 +30,11 @@ public class FileIOUtils {
 	
 	/**
 	 * NOTE:This method shouldn't be called from nowhere else than {@code CoreCRGK}.
-	 * <p>Checks if the program is running from the jar file, and establishes resource and native library paths.
+	 * <p>Checks if the program is running from the jar file, and establishes resource paths.
 	 */
 	public static final void initIO() {
 		URL url = CoreCRGK.class.getResource("");
 		isJar = url.getProtocol().equals("jar");
-		Properties prop = System.getProperties();
 		
 		if (isJar) {
 			String[] str;
@@ -50,52 +47,11 @@ public class FileIOUtils {
 				
 				defaultLib = path.replace("ÉNÉâÉçÉèÉKÉ`ÇËåN.jar", "");
 				Jar = new JarFile(new File(path));
-				
-				File f = new File(defaultLib + "LIB_PATH_.config");
-				if (f.exists()) {
-					BufferedReader br = new BufferedReader(new FileReader(f));
-					String lib = br.readLine(); br.close();
-					String form = "";
-					for (byte b : lib.getBytes()) {
-						lib = lib.substring(1);
-						if ((char)b == '=')
-							break;
-						form += Character.toString((char)b);
-					}
-					if (form.equals("-Djava.library.path")) {
-						if (lib.startsWith("\"") && lib.endsWith("\"")) {
-							lib = lib.substring(1); lib = lib.substring(0, lib.length() - 1);
-							System.out.println(lib);
-							prefferedLib = lib;
-						} else {
-							System.out.println("Native path not set right: \'\"\' not found");
-						}
-					}else {
-						System.out.println("Native path not set right: set to be -Djava.library.path");
-						System.out.println(form);
-					}
-				}
 			} catch (UnsupportedEncodingException e1) {
 				e1.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
-			libName = "opencvlib";
-			prop.setProperty("java.library.path", prefferedLib.equals("") ? defaultLib : prefferedLib);
-		} else {
-			libName = Core.NATIVE_LIBRARY_NAME;
-			prop.setProperty("java.library.path", defaultLib);
-		}
-		System.out.println("Loading lib from path:" + prop.getProperty("java.library.path"));
-		System.out.println("named:" + libName);
-		try {
-			System.out.println(prop.getProperty("java.library.path") + "/" + libName + ".dll");
-			System.load(prop.getProperty("java.library.path") + "/" + libName + ".dll");
-		} catch (UnsatisfiedLinkError e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(new JFrame(), e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
-			System.exit(0);
 		}
 	}
 	

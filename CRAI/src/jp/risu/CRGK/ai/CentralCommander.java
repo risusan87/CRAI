@@ -1,15 +1,16 @@
 package jp.risu.CRGK.ai;
 
+import java.awt.BasicStroke;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import org.opencv.core.Mat;
-import org.opencv.core.Point;
-import org.opencv.core.Scalar;
-import org.opencv.imgproc.Imgproc;
 
 import jp.risu.CRGK.GUI.scene.main.MainLabel;
 import jp.risu.CRGK.GUI.scene.main.SceneMain;
+import jp.risu.CRGK.util.Colour;
 import jp.risu.CRGK.util.ImageUtils;
 import jp.risu.CRGK.util.ThreadProxy;
 
@@ -61,9 +62,12 @@ public class CentralCommander {
 					//Something to do with coord converting -> gui to screen
 					Point strt = new Point(ml.start.width, ml.start.height);
 					Point dst = new Point(ml.end.width, ml.end.height);
-					Mat m = ImageUtils.toMatrix(img);
-					Imgproc.rectangle(m, strt, dst, new Scalar(0, 0, 255, 0), 2);
-					return ImageUtils.toBufferedImage(m);
+					Graphics2D g = (Graphics2D)img.getGraphics();
+					g.setStroke(new BasicStroke(1.0f));
+					g.setColor(Colour.getColorFromDegrees(180));
+					g.drawRect(strt.x,strt.y, dst.x - strt.x, dst.y - strt.y);
+					g.dispose();
+					return img;
 				});
 			}
 			if (!ProcessPromiser.isJobClear())
