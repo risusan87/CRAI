@@ -10,6 +10,7 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
+import jp.risu.CRGK.CoreCRGK;
 import jp.risu.CRGK.GUI.scene.Scene;
 import jp.risu.CRGK.GUI.scene.main.MainLabel;
 import jp.risu.CRGK.GUI.scene.main.SceneMain;
@@ -29,7 +30,7 @@ public class GUIController extends JFrame {
 	
 	public GUIController() {
 		this.Scenes = new ArrayList<Scene>();
-		this.setTitle("ÉNÉâÉçÉèÉKÉ`ÇËåN dev0.7.6");
+		this.setTitle(CoreCRGK.PROJNAM);
 		this.setSize(new Dimension(700, 600));
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		try {

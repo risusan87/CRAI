@@ -68,10 +68,13 @@ public class MainLabel extends JLabel implements MouseListener, MouseMotionListe
 	public void mouseReleased(MouseEvent e) {
 		if (this.isInLabel && start != null && end != null) {
 			end = new Dimension(e.getX(), e.getY());
-			SceneMain sm = (SceneMain)ThreadProxy.GUI.getScene("SceneMain");
-			McPanel mcl = (McPanel)sm.mcl;
-			mcl.setImage(ThreadProxy.CAP.captureSelectedScreen(start, end));
-			isDragging = false;
+			//Fixed bug that throwing useless exceptions when width or height is zero.
+			if (end.getHeight() != start.getHeight() && end.getWidth() != start.getWidth()) {
+				SceneMain sm = (SceneMain)ThreadProxy.GUI.getScene("SceneMain");
+				McPanel mcl = (McPanel)sm.mcl;
+				mcl.setImage(ThreadProxy.CAP.captureSelectedScreen(start, end));
+				isDragging = false;
+			}
 			start = null;
 			end = null;
 		}

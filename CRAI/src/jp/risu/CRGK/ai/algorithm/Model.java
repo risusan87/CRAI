@@ -1,9 +1,6 @@
 package jp.risu.CRGK.ai.algorithm;
 
 import java.awt.image.BufferedImage;
-import java.util.concurrent.CompletableFuture;
-
-import jp.risu.CRGK.util.ImageUtils;
 
 /**
  * All images will be converted into {@code Model} objects in this application befour processing.
@@ -12,6 +9,24 @@ import jp.risu.CRGK.util.ImageUtils;
  * @author Risusan
  */
 public final class Model {
+	public static Model currentModel;
+	/**
+	 * Used to make a list of Model in method {@code loadAsModel0()}
+	 * @param par1int - width of the image
+	 */
+	private Model(int[] par1int) {
+		
+	}
+	
+	/**
+	 * 
+	 * @param par1int
+	 * @param par2int - give 0 as nothing
+	 */
+	private Model(int[] par1int, int par2int) {
+		
+	}
+	
 	/**
 	 * Loads {@code BufferedImage} as {@code Model} object.
 	 * !!IT DOES NOT NEED TO BE PROCESSED WITH {@code CompletableFuture}!!
@@ -21,6 +36,26 @@ public final class Model {
 	 */
 	public static void loadAsModel0(BufferedImage par1buffimg) {
 		int height = par1buffimg.getHeight();
-		int width = par1buffimg.getWidth();
+		int width  = par1buffimg.getWidth();
+		
+		int b[] = new int[height * width];
+		for (int h = 0; h < height; h++)
+			for (int w = 0; w < width; w++)
+				b[h * width + w] = par1buffimg.getRGB(w, h);
+		currentModel = new Model(b);
+	}
+	
+	/**
+	 * used to create model data. data will be exported to sys folder, and will not be loaded yet.
+	 * model data can be used to detect it as object in model loaded from screen.
+	 * @param par1buffimg
+	 */
+	public static void createModelData(BufferedImage par1buffimg) {
+		int height = par1buffimg.getHeight();
+		int width  = par1buffimg.getWidth();
+	}
+	
+	public static void loadAsModel(Model par1model) {
+		
 	}
 }

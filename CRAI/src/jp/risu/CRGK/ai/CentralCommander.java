@@ -1,18 +1,22 @@
 package jp.risu.CRGK.ai;
 
 import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.image.BufferedImage;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import jp.risu.CRGK.GUI.scene.main.MainLabel;
 import jp.risu.CRGK.GUI.scene.main.SceneMain;
-import jp.risu.CRGK.util.Colour;
+import jp.risu.CRGK.ai.algorithm.Model;
 import jp.risu.CRGK.util.ImageUtils;
 import jp.risu.CRGK.util.ThreadProxy;
+import jp.risu.CRGK.util.color.Colour;
+import jp.risu.CRGK.util.color.PureColour;
 
 /**
  * <p>Date modified: 2020/03/20
@@ -52,7 +56,9 @@ public class CentralCommander {
 	 * Called for every single loop when ai thread is active.
 	 */
 	public void updateStatus(int par1int) {
-		CompletableFuture<Void> pros = CompletableFuture.runAsync(() -> {
+		BufferedImage mainIM = ThreadProxy.CAP.shrinkedImage;
+		if (mainIM != null)
+			Model.loadAsModel0(mainIM);
 			if (!ProcessPromiser.isJobClear())
 				ProcessPromiser.clearJobs();
 			SceneMain sm = (SceneMain)ThreadProxy.GUI.getScene("SceneMain");
@@ -62,26 +68,41 @@ public class CentralCommander {
 					//Something to do with coord converting -> gui to screen
 					Point strt = new Point(ml.start.width, ml.start.height);
 					Point dst = new Point(ml.end.width, ml.end.height);
+					int x, y, width, height;
+					if (dst.x > strt.x) {
+						x = strt.x;
+						width = dst.x - strt.x;
+					} else if (strt.x > dst.x) {
+						x = dst.x;
+						width = strt.x - dst.x;
+					} else {
+						x = strt.x;
+						width = 1;
+					}
+					if (dst.y > strt.y) {
+						y = strt.y;
+						height = dst.y - strt.y;
+					} else if (strt.y > dst.y) {
+						y = dst.y;
+						height = strt.y - dst.y;
+					} else {
+						y = strt.y;
+						height = 1;
+					}
+					
 					Graphics2D g = (Graphics2D)img.getGraphics();
 					g.setStroke(new BasicStroke(1.0f));
-					g.setColor(Colour.getColorFromDegrees(180));
-					g.drawRect(strt.x,strt.y, dst.x - strt.x, dst.y - strt.y);
+					g.setColor(new PureColour(153, 153, 162).asColor());
+					g.drawRect(x, y, width, height);
 					g.dispose();
 					return img;
 				});
 			}
 			if (!ProcessPromiser.isJobClear())
-				ThreadProxy.GUI.setProcessedImage(ProcessPromiser.executeProcesses(ThreadProxy.CAP.shrinkedImage));
+				ThreadProxy.GUI.setProcessedImage(ProcessPromiser.executeProcesses(mainIM));
 			else if (ThreadProxy.CAP.shrinkedImage != null)
-				ThreadProxy.GUI.setProcessedImage(ThreadProxy.CAP.shrinkedImage);
-		}, ThreadProxy.poolAI());
-		
-		try {
-			pros.get();
-		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
-		}
-		SceneMain sm = (SceneMain)ThreadProxy.GUI.getScene("SceneMain");
+				ThreadProxy.GUI.setProcessedImage(mainIM);
+
 		sm.setPPS(ThreadProxy.currentPPS);
 		sm.setFPS(ThreadProxy.currentFPS);
 	}

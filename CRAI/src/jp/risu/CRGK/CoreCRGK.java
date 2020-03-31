@@ -14,6 +14,9 @@ import jp.risu.CRGK.util.ThreadProxy;
 public class CoreCRGK {
 	static { FileIOUtils.initIO(); };
 	
+	public static final String VERSION = "dev.0.7.8";
+	public static final String PROJNAM = "CrGkun_" + VERSION; 
+	
 	public static final int WIDTH = Toolkit.getDefaultToolkit().getScreenSize().width;
 	public static final int HEIGHT = Toolkit.getDefaultToolkit().getScreenSize().height;
 	public static final int R_WIDTH = getRatio().width;
