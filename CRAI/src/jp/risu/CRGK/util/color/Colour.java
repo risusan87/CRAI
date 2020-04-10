@@ -11,7 +11,14 @@ import java.awt.Color;
  * <p>Date created: 2020/03/24
  * @author Risusan
  */
-public class Colour extends PureColour {
+public class Colour {
+	public final int Red;
+	public final int Green;
+	public final int Blue;
+	public final float White;
+	public final float Black;
+	
+	private static final int areawb = getWBArea();
 	
 	/**
 	 * Creates {@code Colour} object from r,g,b values.
@@ -20,11 +27,49 @@ public class Colour extends PureColour {
 	 * @param par3int
 	 */
 	public Colour(int par1int, int par2int, int par3int) {
-		super(par1int, par2int, par3int);
+		PureColour pc = new PureColour(par1int, par2int, par3int);
+		this.Red = pc.asColor().getRed();
+		this.Green = pc.asColor().getGreen();
+		this.Blue = pc.asColor().getBlue();
+		this.White = pc.getWhite();
+		this.Black = pc.getBlack();
 	}
 	
-	public Colour(Color par1color) {
-		super(par1color.getRed(), par1color.getGreen(), par1color.getBlue());
+	public double getMatchedValue(Colour par1colour) {
+		PureColour dst = par1colour.asPureColour();
+		double match_p = this.asPureColour().getMatchedValue(dst);
+		double match_w = 0.0;
+		double match_b = 0.0;
+		double rt;
+		if (!PureColour.isPureColour(this.asColor())) {
+			int sw = (int)Math.round(this.White * 10000.0);
+			int sb = (int)Math.round(this.Black * 10000.0);
+			int dw = (int)Math.round(par1colour.White * 10000.0);
+			int db = (int)Math.round(par1colour.Black * 10000.0);
+			int wdis = Math.abs(sw - dw);
+			int bdis = Math.abs(sb - db);
+			double warea = 0.0;
+			for (int i = sw > dw ? dw : sw; i < wdis; i++)
+				warea += Math.cos((9.0 * (double)i) / 1000.0);
+			match_w = 1 - warea / areawb;
+			double barea = 0.0;
+			for (int i = sb > db ? db : sb; i < bdis; i++)
+				barea += Math.sin((9.0 * (double)i) / 1000.0);
+			match_b = 1 - barea / areawb;
+			rt = match_p + match_w + match_b;
+			rt = rt >= 1.0 ? 1.0 : rt;
+			rt = rt <= 0.0 ? 0.0 : rt;
+		} else
+			rt = match_p;
+		return rt;
+	}
+	
+	public PureColour asPureColour() {
+		return new PureColour(this.Red, this.Green, this.Blue);
+	}
+	
+	public Color asColor() {
+		return new Color(this.Red, this.Green, this.Blue);
 	}
 	
 	/**
@@ -54,12 +99,10 @@ public class Colour extends PureColour {
 		return rgb;
 	}
 	
-	/**
-	 * Returns best fit degree point from given color RGB value.
-	 * @param par1color
-	 * @return Best fit degree value from Color
-	 */
-	public static int getDegreesFromColor(Color par1color) {
-		return 0;
+	private static final int getWBArea() {
+		int rt = 0;
+		for (int i = 0; i < 10000; i++)
+			rt += Math.cos((9.0 * (double)i) / 1000.0);
+		return rt;
 	}
 }

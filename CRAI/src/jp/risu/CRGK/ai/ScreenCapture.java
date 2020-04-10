@@ -73,6 +73,7 @@ public class ScreenCapture {
 		try {
 			this.shrinkedImage = Thumbnails.of(this.capturedImage).forceSize(320, 550).asBufferedImage();
 			if (!ProcessPromiser.isJobClear() && this.shrinkedImage != null) {
+				//Might be faster if completablefuture is removed
 				CompletableFuture<BufferedImage> cf = CompletableFuture.supplyAsync(() -> {
 					try {
 						return ProcessPromiser.executeProcesses(this.shrinkedImage);

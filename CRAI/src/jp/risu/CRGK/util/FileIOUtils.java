@@ -15,6 +15,8 @@ import javax.swing.JOptionPane;
 import jp.risu.CRGK.CoreCRGK;
 
 /**
+ * Class {@code FileIOUtils} gives access to any out or inside resources for the program.
+ * Resources loaded by this class will be returned as input stream, keeping eyes on memory leaking and releasing if nessessary.
  * <p>Date created: 2020/03/24
  * @author Risusan
  */
@@ -24,17 +26,16 @@ public class FileIOUtils {
 	private static JarFile Jar = null;
 	
 	/**
-	 * NOTE:This method shouldn't be called from nowhere else than {@code CoreCRGK}.
-	 * <p>Checks if the program is running from the jar file, and determins resource paths.
+	 * Checks if the program is running from the jar file or IDE, and establishes resource paths.
 	 */
-	public static final void initIO() {
-		URL url = CoreCRGK.class.getResource("");
+	public static final void initIO(Class<?> par1class) {
+		URL url = par1class.getResource("");
 		isJar = url.getProtocol().equals("jar");
 		
 		if (isJar) {
 			String[] str;
 			try {
-				String path = CoreCRGK.class.getResource("").getPath();
+				String path = par1class.getResource("").getPath();
 				path = URLDecoder.decode(path, "UTF-8");
 				
 				str = path.split(":");
@@ -42,7 +43,8 @@ public class FileIOUtils {
 				
 				System.out.println(path);
 				if (!path.endsWith(CoreCRGK.PROJNAM + ".jar")) {
-					JOptionPane.showMessageDialog(new JFrame(), CoreCRGK.PROJNAM + ".jar can't be found.", "Error", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog
+						(new JFrame(), CoreCRGK.PROJNAM + ".jar can't be found.", "Error", JOptionPane.ERROR_MESSAGE);
 					System.exit(0);
 				}
 				defaultLib = path.replace(CoreCRGK.PROJNAM, "");
@@ -62,7 +64,7 @@ public class FileIOUtils {
 	/**
 	 * Returns any outcoming file in resources folder as a {@code InputStream} object. Paths are
 	 * specified having the origin as the root of the jar file:
-	 * <p>ex: {@code resources/path/to/some/files/SomeFile.file} will access to ÉNÉâÉçÉèÉKÉ`ÇËåN.jar/resources/path/...
+	 * <p>ex: {@code resources/path/to/some/files/SomeFile.file} will access to CRGK.jar/resources/path/...
 	 * @param par1str - Path to the destination
 	 * @return file in as {@code InputStream}, or {@code null} if file not found.
 	 */

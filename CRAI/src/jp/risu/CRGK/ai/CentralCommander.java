@@ -92,7 +92,7 @@ public class CentralCommander {
 					
 					Graphics2D g = (Graphics2D)img.getGraphics();
 					g.setStroke(new BasicStroke(1.0f));
-					g.setColor(new PureColour(153, 153, 162).asColor());
+					g.setColor(new PureColour(0, 255, 0).asColor());
 					g.drawRect(x, y, width, height);
 					g.dispose();
 					return img;

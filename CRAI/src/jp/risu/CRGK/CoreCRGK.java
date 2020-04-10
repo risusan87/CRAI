@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import jp.risu.CRGK.util.FileIOUtils;
 import jp.risu.CRGK.util.ThreadProxy;
+import jp.risu.CRGK.util.color.Colour;
+import jp.risu.CRGK.util.color.PureColour;
 
 /**
  * find player stats @ https://statsroyale.com/profile/*player tag*
@@ -12,7 +14,7 @@ import jp.risu.CRGK.util.ThreadProxy;
  * @author Risusan
  */
 public class CoreCRGK {
-	static { FileIOUtils.initIO(); };
+	static { FileIOUtils.initIO(CoreCRGK.class); };
 	
 	public static final String VERSION = "dev.0.7.8";
 	public static final String PROJNAM = "CrGkun_" + VERSION; 
